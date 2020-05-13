@@ -1,0 +1,16 @@
+# docker-compose.yml
+app:
+  build: .
+  ports:
+    - "5000:5000" #golang webserver用のポート
+    - "5050:5050" #delve用のポート
+  links:
+    - redis
+  volumes:
+    - ".:/go/src/app"
+  privileged: true # Delveで必要なので付与します。セキュリティ面から本番環境では使うべきではありません。
+  working_dir: "/go/src/app"
+  command: dlv debug --headless --listen=:5050 --log
+
+redis:
+  image: redis
